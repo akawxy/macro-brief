@@ -43,22 +43,22 @@ const INFO={
 // ── draggable popup ───────────────────────────────────────────────────────────
 function InfoPopup({type,origin,onClose}){
   const info=INFO[type];
-  const [pos,setPos]=useState(null);
+  const [pos,setPos]=useState(()=>{
+    const w=380;
+    let x=(origin?.x??400)-w/2;
+    let y=(origin?.y??200)+20;
+    if(typeof window!=='undefined'){
+      x=Math.max(16,Math.min(window.innerWidth-w-16,x));
+      y=Math.max(60,Math.min(window.innerHeight-480,y));
+    }
+    return{x,y};
+  });
   const [dragging,setDragging]=useState(false);
   const [offset,setOffset]=useState({x:0,y:0});
   const [visible,setVisible]=useState(false);
   const popRef=useRef(null);
 
-  useEffect(()=>{
-    if(!origin||!popRef.current)return;
-    const w=380,h=500;
-    let x=origin.x-w/2;
-    let y=origin.y+20;
-    x=Math.max(16,Math.min(window.innerWidth-w-16,x));
-    y=Math.max(60,Math.min(window.innerHeight-h-16,y));
-    setPos({x,y});
-    setTimeout(()=>setVisible(true),20);
-  },[origin]);
+  useEffect(()=>{ setTimeout(()=>setVisible(true),20); },[]);
 
   useEffect(()=>{
     if(!dragging)return;
@@ -73,7 +73,7 @@ function InfoPopup({type,origin,onClose}){
     return()=>{window.removeEventListener('mousemove',move);window.removeEventListener('mouseup',up);window.removeEventListener('touchmove',move);window.removeEventListener('touchend',up);};
   },[dragging,offset]);
 
-  if(!info||!pos)return null;
+  if(!info)return null;
 
   const onDragStart=(e)=>{
     const cx=e.touches?e.touches[0].clientX:e.clientX;
