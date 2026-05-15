@@ -133,7 +133,7 @@ function DataRow({label,value,sub,subColor}){
   );
 }
 
-function SHead({children,badge,right,info,onInfo}){
+function SHead({children,badge,right,info,onInfo,sourceUrl}){
   const bc=badge==='LONG'||badge==='EXPANDING'?'#4ade80':badge==='SHORT'||badge==='CONTRACTING'?'#f87171':'#666';
   return(
     <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14,flexWrap:'wrap',gap:6}}>
@@ -149,7 +149,16 @@ function SHead({children,badge,right,info,onInfo}){
           >what is this</button>
         )}
       </div>
-      {right&&<span style={{fontFamily:'monospace',fontSize:10,color:'#333'}}>{right}</span>}
+      <div style={{display:'flex',alignItems:'center',gap:10}}>
+        {right&&<span style={{fontFamily:'monospace',fontSize:10,color:'#333'}}>{right}</span>}
+        {sourceUrl&&(
+          <a href={sourceUrl} target="_blank" rel="noreferrer"
+            style={{fontFamily:'monospace',fontSize:10,color:'#383838',textDecoration:'none',letterSpacing:'0.04em',transition:'color 0.15s',display:'flex',alignItems:'center',gap:3}}
+            onMouseEnter={e=>e.currentTarget.style.color='#888'}
+            onMouseLeave={e=>e.currentTarget.style.color='#383838'}
+          >source ↗</a>
+        )}
+      </div>
     </div>
   );
 }
@@ -281,7 +290,7 @@ export default function Page(){
           <Ln/>
 
           <div className="s1">
-            <SHead badge={cot?.direction} right={cot?`COT ${cot.date} · ${cot.weeksOfData}w`:errors?.find(e=>e.startsWith('cot:'))??'—'} info="cta" onInfo={(t,o)=>setPopup({type:t,origin:o})}>
+            <SHead badge={cot?.direction} right={cot?`COT ${cot.date} · ${cot.weeksOfData}w`:errors?.find(e=>e.startsWith('cot:'))??'—'} info="cta" onInfo={(t,o)=>setPopup({type:t,origin:o})} sourceUrl="https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm">
               CTA proxy — CFTC COT
             </SHead>
             {cot?(
@@ -301,7 +310,7 @@ export default function Page(){
           <Ln/>
 
           <div className="s2">
-            <SHead badge={fed?.qtStatus} right={fed?`FRED ${fed.date}`:'—'} info="fed" onInfo={(t,o)=>setPopup({type:t,origin:o})}>
+            <SHead badge={fed?.qtStatus} right={fed?`FRED ${fed.date}`:'—'} info="fed" onInfo={(t,o)=>setPopup({type:t,origin:o})} sourceUrl="https://www.federalreserve.gov/releases/h41/current/">
               Fed balance sheet — H.4.1
             </SHead>
             {fed?(
